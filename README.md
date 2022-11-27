@@ -26,4 +26,4 @@ npm install
 npm run dev
 ```
 
-6. ¡Listo! Puedes acceder a la api mediante `localhost:3000` en tu navegador
+6. ¡Listo Puedes acceder a la api mediante `localhost:3000` en tu navegador
