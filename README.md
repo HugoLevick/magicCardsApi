@@ -1,4 +1,4 @@
-# magicCardsApi
+# Magic Cards Api
 
 Api para la obtención de tarjetas Magic.
 
@@ -27,3 +27,52 @@ npm run dev
 ```
 
 6. ¡Listo! Puedes acceder a la api mediante `localhost:3000` en tu navegador
+
+7. Es posible popular la base de datos haciendo una petición GET a: `localhost:3000/seed`
+
+# Uso de la API
+
+## Obtener todas las cartas
+
+```
+GET baseUrl/cards
+```
+
+## Obtener una carta en especifico
+
+```
+GET baseUrl/cards/(id)
+```
+
+## Crear una carta
+
+El body debe de contener los siguientes elementos:
+
+```
+{
+    numero: number,
+
+    nombre: "string",
+
+    tipos: [
+        "string 1",
+        "string 2",
+    ],
+
+    rareza: "string",
+
+    texto: "string"
+}
+```
+
+Hacer la peticion a:
+
+```
+POST baseUrl/cards
+```
+
+## Eliminar una carta en especifico
+
+```
+DELETE baseUrl/cards/(id)
+```
