@@ -10,7 +10,11 @@ Pasos para ejecutar en desarrollo:
 
 ```
 git init
-git remote add https://github.com/HugoLevick/magicCardsApi.git github
+```
+```
+git remote add github https://github.com/HugoLevick/magicCardsApi.git
+```
+```
 git pull github main
 ```
 
