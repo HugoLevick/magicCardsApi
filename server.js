@@ -9,16 +9,21 @@ const puerto = 3000;
 let cards = [];
 
 app.get("/seed", async (req, res) => {
-  const response = await fetch("https://api.magicthegathering.io/v1/cards");
-  let data = await response.json();
-  for (let card in data.cards) {
-    card = data.cards[card];
-    cards.push(new Card(card.number, card.name, card.types, card.rarity, card.text));
+  try {
+    const response = await fetch("https://api.magicthegathering.io/v1/cards");
+    let data = await response.json();
+
+    for (let card in data.cards) {
+      card = data.cards[card];
+      cards.push(new Card(card.number, card.name, card.types, card.rarity, card.text));
+    }
+    res.send("Semilla ejecutada");
+  } catch (error) {
+    res.send("Semilla fallida");
   }
-  res.send("Semilla ejecutada");
 });
 
-app.route("/card").get((req, res) => {
+app.route("/cards").get((req, res) => {
   res.send(cards);
 });
 

@@ -50,7 +50,7 @@ El body debe de contener los siguientes elementos:
 
 ```
 {
-    numero: number,
+    numero: "string",
 
     nombre: "string",
 
@@ -64,6 +64,8 @@ El body debe de contener los siguientes elementos:
     texto: "string"
 }
 ```
+
+<font size = "2">_El numero es de tipo string debido a que algunas cartas contienen numeros con caracteres especiales_</font>
 
 Hacer la peticion a:
 
