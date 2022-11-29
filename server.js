@@ -15,7 +15,7 @@ app.get("/seed", async (req, res) => {
 
     for (let card in data.cards) {
       card = data.cards[card];
-      cards.push(new Card(card.number, card.name, card.types, card.rarity, card.text));
+      cards.push(new Card(card.number.replace("★", ".5"), card.name, card.types, card.rarity, card.text));
     }
     res.send("Semilla ejecutada");
   } catch (error) {
@@ -25,6 +25,14 @@ app.get("/seed", async (req, res) => {
 
 app.route("/cards").get((req, res) => {
   res.send(cards);
+});
+
+app.route("/cards/:numero").get((req, res) => {
+  let carta = {};
+  cards.forEach((c) => {
+    if (c.numero === req.params.numero) carta = c;
+  });
+  res.send(carta);
 });
 
 app.listen(puerto, () => {
