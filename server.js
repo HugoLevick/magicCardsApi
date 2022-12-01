@@ -1,39 +1,91 @@
 import express from "express";
 import fetch from "node-fetch";
+import dotenv from "dotenv";
+import mysql from "mysql";
+import querydb from "./src/query.js";
 import Card from "./src/card.class.js";
+import bodyParser from "body-parser";
+dotenv.config();
+
+const connection = mysql.createConnection({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  database: process.env.DB_NAME,
+  port: 3307,
+});
 
 const app = express();
 app.use(express.static("public"));
-const puerto = 3000;
+app.use(bodyParser.json());
+const puerto = process.env.PORT;
 
 let cards = [];
 
-app.get("/seed", async (req, res) => {
+app.get("/seed", (req, res) => {
   try {
-    const response = await fetch("https://api.magicthegathering.io/v1/cards");
-    let data = await response.json();
-
-    for (let card in data.cards) {
-      card = data.cards[card];
-      cards.push(new Card(card.number.replace("★", ".5"), card.name, card.types, card.rarity, card.text));
-    }
-    res.send("Semilla ejecutada");
+    connection.query("TRUNCATE cartas", async (err) => {
+      if (err) throw err;
+      let sql = "INSERT INTO cartas (id, numero, nombre, rareza, texto, tipo) VALUES";
+      const response = await fetch("https://api.magicthegathering.io/v1/cards?limit=5");
+      let data = await response.json();
+      for (let card in data.cards) {
+        card = data.cards[card];
+        sql += `(UUID(), ${card.number.replace("★", ".5")}, "${card.name}", "${card.rarity}", "${card.text}", "${card.type}"),`;
+      }
+      sql = sql.replace(/,$/, "");
+      connection.query(sql, (err) => {
+        if (err) throw err;
+        res.send("Semilla ejecutada");
+      });
+    });
   } catch (error) {
+    console.log(error);
     res.send("Semilla fallida");
   }
 });
 
-app.route("/cards").get((req, res) => {
-  res.send(cards);
-});
-
-app.route("/cards/:numero").get((req, res) => {
-  let carta = {};
-  cards.forEach((c) => {
-    if (c.numero === req.params.numero) carta = c;
+app
+  .route("/cards")
+  .get(async (req, res) => {
+    const limit = +req.query.limit || 10;
+    const offset = +req.query.offset || 0;
+    const cards = await querydb(`SELECT * FROM cartas LIMIT ${limit} OFFSET ${offset}`, connection);
+    res.send({
+      next: `${process.env.HOSTNAME}:${process.env.PORT}/cards?limit=${limit}&offset=${offset + limit}`,
+      result: cards,
+    });
+  })
+  .post(async (req, res) => {
+    try {
+      const card = new Card(req.body.numero, req.body.nombre, req.body.tipo, req.body.rareza, req.body.texto);
+      await querydb(`INSERT INTO cartas(id, numero, nombre, rareza, texto, tipo) VALUES(UUID(), ${card.numero}, '${card.nombre}', '${card.rareza}', '${card.texto}', '${card.tipo}')`, connection);
+      res.send({ result: card });
+    } catch (error) {
+      console.log(error);
+      res.send("No se pudo insertar la carta, consulta logs");
+    }
   });
-  res.send(carta);
-});
+
+app
+  .route("/cards/:numero")
+  .get(async (req, res) => {
+    const card = await querydb(`SELECT * FROM cartas WHERE numero = ${req.params.numero}`, connection);
+    res.send({
+      result: card,
+    });
+  })
+  .delete(async (req, res) => {
+    try {
+      await querydb(`DELETE FROM cartas WHERE numero = ${req.params.numero}`, connection);
+      res.send({
+        result: "Se borro la carta",
+      });
+    } catch (error) {
+      console.log(error);
+      res.send({ error: "No se pudo borrar la carta" });
+    }
+  });
 
 app.listen(puerto, () => {
   console.log(`Api corriendo en puerto: ${puerto}`);

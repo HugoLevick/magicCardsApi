@@ -1,8 +1,8 @@
 class Card {
-  constructor(numero, nombre, tipos, rareza, texto) {
+  constructor(numero, nombre, tipo, rareza, texto) {
     this.numero = numero;
     this.nombre = nombre;
-    this.tipos = tipos;
+    this.tipo = tipo;
     this.rareza = rareza;
     this.texto = texto;
   }
