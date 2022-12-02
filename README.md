@@ -26,7 +26,11 @@ git pull github main
 npm install
 ```
 
-5. Para correr el servidor, ejecutar:
+5. Copiar el archivo `.env.template` y renombrarlo a `.env`
+
+6. Introducir los datos de variables de entorno
+
+7. Para correr el servidor, ejecutar:
 
 ```
 npm run dev
