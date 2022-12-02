@@ -11,9 +11,11 @@ Pasos para ejecutar en desarrollo:
 ```
 git init
 ```
+
 ```
 git remote add github https://github.com/HugoLevick/magicCardsApi.git
 ```
+
 ```
 git pull github main
 ```
@@ -54,7 +56,7 @@ El body debe de contener los siguientes elementos:
 
 ```
 {
-    numero: "string",
+    numero: number,
 
     nombre: "string",
 

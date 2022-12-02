@@ -36,12 +36,12 @@ app.get("/seed", (req, res) => {
       sql = sql.replace(/,$/, "");
       connection.query(sql, (err) => {
         if (err) throw err;
-        res.send("Semilla ejecutada");
+        res.send("Insercion completa");
       });
     });
   } catch (error) {
     console.log(error);
-    res.send("Semilla fallida");
+    res.send("Insercion fallida, consultar mensajes de consola");
   }
 });
 
@@ -50,9 +50,10 @@ app
   .get(async (req, res) => {
     const limit = +req.query.limit || 10;
     const offset = +req.query.offset || 0;
-    const cards = await querydb(`SELECT * FROM cartas LIMIT ${limit} OFFSET ${offset}`, connection);
+    const cards = await querydb(`SELECT * FROM cartas ORDER BY numero ASC LIMIT ${limit} OFFSET ${offset}`, connection);
     res.send({
       next: `${process.env.HOSTNAME}:${process.env.PORT}/cards?limit=${limit}&offset=${offset + limit}`,
+      previous: offset - limit >= 0 ? `${process.env.HOSTNAME}:${process.env.PORT}/cards?limit=${limit}&offset=${offset - limit}` : undefined,
       result: cards,
     });
   })
@@ -70,10 +71,17 @@ app
 app
   .route("/cards/:numero")
   .get(async (req, res) => {
-    const card = await querydb(`SELECT * FROM cartas WHERE numero = ${req.params.numero}`, connection);
-    res.send({
-      result: card,
-    });
+    if (req.params.numero !== "random") {
+      const [card] = await querydb(`SELECT * FROM cartas WHERE numero = ${req.params.numero}`, connection);
+      res.send({
+        result: card,
+      });
+    } else {
+      const [card] = await querydb(`SELECT * FROM cartas ORDER BY RAND() LIMIT 11`, connection);
+      res.send({
+        result: card,
+      });
+    }
   })
   .delete(async (req, res) => {
     try {
@@ -86,7 +94,6 @@ app
       res.send({ error: "No se pudo borrar la carta" });
     }
   });
-
 app.listen(puerto, () => {
   console.log(`Api corriendo en puerto: ${puerto}`);
 });
