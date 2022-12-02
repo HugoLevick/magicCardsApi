@@ -36,9 +36,9 @@ npm install
 npm run dev
 ```
 
-6. ¡Listo! Puedes acceder a la api mediante `localhost:3000` en tu navegador
+8. ¡Listo! Puedes acceder a la api mediante `localhost:3000` en tu navegador
 
-7. Es posible popular la base de datos haciendo una petición GET a: `localhost:3000/seed`
+9. Es posible popular la base de datos haciendo una petición GET a: `localhost:3000/seed` (Dataset obtenido de https://api.magicthegathering.io/v1/cards)
 
 # Uso de la API
 
