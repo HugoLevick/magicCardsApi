@@ -72,8 +72,6 @@ El body debe de contener los siguientes elementos:
 }
 ```
 
-<font size = "2">_El numero es de tipo string debido a que algunas cartas contienen numeros con caracteres especiales_</font>
-
 Hacer la peticion a:
 
 ```
