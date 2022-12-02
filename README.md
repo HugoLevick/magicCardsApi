@@ -64,10 +64,7 @@ El body debe de contener los siguientes elementos:
 
     nombre: "string",
 
-    tipos: [
-        "string 1",
-        "string 2",
-    ],
+    tipo: "string",
 
     rareza: "string",
 
